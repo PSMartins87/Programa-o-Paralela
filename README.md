@@ -323,7 +323,7 @@ int main()
 ```
 
 
-## 5. Soma de 2 Vetores sem OpenMP
+## 5. Soma de 2 Vetores com OpenMP sem utilizar a diretiva `#pragma omp for`
 O código `sumVectors.cpp` utiliza o OpenMP para somar dois vetores de caracteres em paralelo.
 
 O programa inclui as seguintes bibliotecas:
