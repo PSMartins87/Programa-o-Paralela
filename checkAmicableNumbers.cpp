@@ -1,13 +1,11 @@
 #include <iostream>
 #include <omp.h>
 #include <time.h>
-#include <chrono>
 using namespace std;
 
 double calculateAbundance(long int number)
 {
     long int sumOfDivisors = 0;
-#pragma omp parallel for num_threads(8) schedule(guided) reduction(+ : sumOfDivisors)
     for (long int i = 1; i <= number; i++)
     {
         if (number % i == 0)
@@ -26,18 +24,11 @@ void findNumbersWithEqualAbundance(long int start, long int end)
     long int number;
     long int i;
     long int j;
-
-    auto inicio = std::chrono::high_resolution_clock::now();
 #pragma omp parallel for num_threads(8) schedule(guided)
     for (number = start; number <= end; number++)
     {
         abundance[number] = calculateAbundance(number);
     }
-
-    auto fim = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duracao = fim - inicio;
-    std::cout << "Tempo de execução: " << duracao.count() / 1000 << " s\n";
-    /*
     for (i = start; i <= end; i++)
     {
         for (j = i + 1; j <= end; j++)
@@ -48,7 +39,6 @@ void findNumbersWithEqualAbundance(long int start, long int end)
             }
         }
     }
-    */
 }
 
 int main()
