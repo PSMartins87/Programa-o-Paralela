@@ -1,12 +1,14 @@
 #include <iostream>
 #include <omp.h>
+#include <time.h>
+#include <chrono>
 using namespace std;
 
-double calculateAbundance(int number)
+double calculateAbundance(long int number)
 {
-    int sumOfDivisors = 0;
-
-    for (int i = 1; i <= number; i++)
+    long int sumOfDivisors = 0;
+#pragma omp parallel for num_threads(8) schedule(guided) reduction(+ : sumOfDivisors)
+    for (long int i = 1; i <= number; i++)
     {
         if (number % i == 0)
         {
@@ -17,30 +19,41 @@ double calculateAbundance(int number)
     return static_cast<double>(sumOfDivisors) / number;
 }
 
-void findNumbersWithEqualAbundance(int start, int end)
+void findNumbersWithEqualAbundance(long int start, long int end)
 {
     cout << "Números com a mesma abundância no intervalo [" << start << ", " << end << "]:" << endl;
+    long double abundance[end] = {0};
+    long int number;
+    long int i;
+    long int j;
 
-#pragma omp parallel for
-    for (int number = start; number <= end; number++)
+    auto inicio = std::chrono::high_resolution_clock::now();
+#pragma omp parallel for num_threads(8) schedule(guided)
+    for (number = start; number <= end; number++)
     {
-        double abundance = calculateAbundance(number);
-        for (int i = number + 1; i <= end; i++)
+        abundance[number] = calculateAbundance(number);
+    }
+
+    auto fim = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> duracao = fim - inicio;
+    std::cout << "Tempo de execução: " << duracao.count() / 1000 << " s\n";
+    /*
+    for (i = start; i <= end; i++)
+    {
+        for (j = i + 1; j <= end; j++)
         {
-            if (calculateAbundance(i) == abundance)
+            if (abundance[i] == abundance[j] && i != j)
             {
-#pragma omp critical
-                {
-                    cout << number << " e " << i << endl;
-                }
+                printf("%li  e %li \n", i, j);
             }
         }
     }
+    */
 }
 
 int main()
 {
-    int start = 1, end = 2000;
+    long int start = 1, end = 500000;
     findNumbersWithEqualAbundance(start, end);
     return 0;
 }
