@@ -16,15 +16,13 @@ double calculatePi(int numIntervals)
         double y = sqrt(1.0 - (x * x));
         sum += y;
     }
-
     double approxPi = 4 * h * sum;
-
     return approxPi;
 }
 
 int main()
 {
-    long int numIntervals = 10000000000000000;
+    long int numIntervals = 100000;
     long double approxPi = calculatePi(numIntervals);
     cout << fixed << setprecision(20) << "Valor aproximado de pi: " << approxPi << endl;
     return 0;

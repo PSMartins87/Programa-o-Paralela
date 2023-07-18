@@ -21,13 +21,10 @@ void sieveOfEratosthenes(long int limit)
             }
         }
     }
-
-    // #pragma omp parallel for
     for (long int p = 2; p <= limit; p++)
     {
         if (prime[p])
         {
-            // #pragma omp critical
             {
                 cout << p << endl;
             }
@@ -37,7 +34,7 @@ void sieveOfEratosthenes(long int limit)
 
 int main()
 {
-    long int limit = 100000000;
+    long int limit = 10000000000;
     cout << "Números primos até " << limit << endl;
     sieveOfEratosthenes(limit);
 }
